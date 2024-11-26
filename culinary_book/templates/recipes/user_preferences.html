@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-4">Ваші вподобання</h1>
+<form method="post" class="space-y-4">
+    {% csrf_token %}
+    <div>
+        <h2 class="text-xl font-semibold mb-2">Улюблені категорії:</h2>
+        {% for category in categories %}
+        <label class="block">
+            <input type="checkbox" name="categories" value="{{ category.id }}"
+                   {% if category in preference.favorite_categories.all %}checked{% endif %}>
+            {{ category.name }}
+        </label>
+        {% endfor %}
+    </div>
+    <div>
+        <h2 class="text-xl font-semibold mb-2">Дієтичні обмеження:</h2>
+        <textarea name="dietary_restrictions" rows="4" class="w-full p-2 border rounded">{{ preference.dietary_restrictions }}</textarea>
+    </div>
+    <button type="submit" class="bg-blue-500 text-white p-2 rounded">Зберегти вподобання</button>
+</form>
+{% endblock %}
+

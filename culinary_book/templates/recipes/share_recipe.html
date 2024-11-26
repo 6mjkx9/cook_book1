@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-4">Поділитися рецептом</h1>
+<h2 class="text-2xl font-semibold mb-2">{{ recipe.title }}</h2>
+<form method="post" class="space-y-4">
+    {% csrf_token %}
+    <div>
+        <label class="block mb-2">Оберіть платформу для шерінгу:</label>
+        <select name="platform" class="w-full p-2 border rounded">
+            <option value="facebook">Facebook</option>
+            
+<option value="twitter">Twitter</option>
+            <option value="instagram">Instagram</option>
+        </select>
+    </div>
+    <button type="submit" class="bg-blue-500 text-white p-2 rounded">Поділитися</button>
+</form>
+{% endblock %}
+

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Кулінарна книга{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-100 font-sans">
+    <header class="bg-white shadow-md">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <a href="{% url 'recipes:home' %}" class="text-2xl font-bold text-gray-800">Кулінарна книга</a>
+                <div class="flex items-center">
+                    <a href="{% url 'recipes:home' %}" class="text-gray-800 hover:text-gray-600 mx-3">Головна</a>
+                    <a href="{% url 'recipes:category_list' %}" class="text-gray-800 hover:text-gray-600 mx-3">Категорії</a>
+                    <a href="{% url 'recipes:recipe_create' %}" class="text-gray-800 hover:text-gray-600 mx-3">Додати рецепт</a>
+                    <a href="{% url 'recipes:about' %}" class="text-gray-800 hover:text-gray-600 mx-3">Про нас</a>
+                    <a href="{% url 'recipes:contact' %}" class="text-gray-800 hover:text-gray-600 mx-3">Контакти</a>
+                    <a href="{% url 'recipes:shopping_list' %}" class="text-gray-800 hover:text-gray-600 mx-3">Список покупок</a>
+                    <a href="{% url 'recipes:recommended_recipes' %}" class="text-gray-800 hover:text-gray-600 mx-3">Рекомендовані рецепти</a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'logout' %}" class="text-gray-800 hover:text-gray-600 mx-3">Вийти</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-gray-800 hover:text-gray-600 mx-3">Увійти</a>
+
+                    {% endif %}
+                </div>
+            </div>
+            <form action="{% url 'recipes:search_recipes' %}" method="get" class="mt-4">
+                <input type="text" name="q" placeholder="Пошук рецептів..." class="w-full px-3 py-2 border rounded-md">
+                <button type="submit" class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Шукати</button>
+            </form>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+        {% if messages %}
+        <div class="messages mb-8">
+            {% for message in messages %}
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

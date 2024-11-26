@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-4">Пошук рецептів</h1>
+<form method="get" action="{% url 'search_recipes' %}" class="mb-4">
+    <input type="text" name="q" placeholder="Введіть назву страви" class="p-2 border rounded">
+    <button type="submit" class="bg-blue-500 text-white p-2 rounded">Пошук</button>
+</form>
+{% endblock %}
+

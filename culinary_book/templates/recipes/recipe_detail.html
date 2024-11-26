@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h1 class="text-3xl font-bold mb-4">{{ recipe.title }}</h1>
+    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="w-full h-64 object-cover rounded-md mb-4">
+    <div class="flex items-center mb-4">
+        <span class="text-gray-600 mr-2">Автор:</span>
+        <span class="font-semibold">{{ recipe.author.username }}</span>
+    </div>
+    <div class="flex items-center mb-4">
+        <span class="text-gray-600 mr-2">Категорія:</span>
+        <a href="{% url 'category_detail' recipe.category.slug %}" class="text-blue-500 hover:underline">{{ recipe.category.name }}</a>
+    </div>
+    <div class="flex items-center mb-4">
+        <span class="text-gray-600 mr-2">Оцінка:</span>
+        <span id="recipe-{{ recipe.id }}" class="rating-display font-semibold">{{ average_rating|default:"Немає оцінок" }}</span>
+        <div class="ml-2">
+            {% for i in "12345" %}
+            <span class="rating-star cursor-pointer text-2xl {% if i|add:"0" <= average_rating %}text-yellow-500{% else %}text-gray-300{% endif %}" data-rating="{{ i }}" data-recipe-id="{{ recipe.id }}">★</span>
+            {% endfor %}
+        </div>
+    </div>
+    <h2 class="text-2xl font-semibold mb-2">Інгредієнти:</h2>
+    <ul class="list-disc list-inside mb-4">
+        {% for ingredient in recipe.ingredients.split %}
+        <li>{{ ingredient }}</li>
+        {% endfor %}
+    </ul>
+    <div class="mt-4">
+        <a href="{% url 'add_to_shopping_list' recipe.id %}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md inline-block">
+            Додати до списку покупок
+        </a>
+    </div>
+    <h2 class="text-2xl font-semibold mb-2">Інструкції:</h2>
+    <ol class="list-decimal list-inside mb-4">
+        {% for step in recipe.instructions.split %}
+        <li>{{ step }}</li>
+        {% endfor %}
+    </ol>
+    <div class="flex items-center mb-4">
+        <span class="text-gray-600 mr-2">Час приготування:</span>
+        <span>{{ recipe.cooking_time }} хвилин</span>
+    </div>
+    <div class="flex items-center mb-4">
+        <span class="text-gray-600 mr-2">Кількість порцій:</span>
+        <span>{{ recipe.servings }}</span>
+    </div>
+</div>
+
+<div class="mt-8">
+    <h2 class="text-2xl font-semibold mb-4">Відгуки</h2>
+    {% for review in recipe.reviews.all %}
+    <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+        <div class="flex items-center mb-2">
+            <span class="font-semibold mr-2">{{ review.user.username }}</span>
+            <span class="text-yellow-500">
+                {% for i in "12345" %}
+                <span class="{% if i|add:"0" <= review.rating %}text-yellow-500{% else %}text-gray-300{% endif %}">★</span>
+                {% endfor %}
+            </span>
+        </div>
+        <p>{{ review.comment }}</p>
+    </div>
+    {% empty %}
+    <p>Поки що немає відгуків. Будьте першим!</p>
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'add_review' recipe.id %}" class="mt-4">
+        {% csrf_token %}
+        {{ review_form.as_p }}
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md mt-2">Додати відгук</button>
+    </form>
+    {% else %}
+    <p class="mt-4">Щоб залишити відгук, будь ласка, <a href="{% url 'login' %}" class="text-blue-500 hover:underline">увійдіть</a> або <a href="{% url 'register' %}" class="text-blue-500 hover:underline">зареєструйтесь</a>.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/rating.js' %}"></script>
+{% endblock %}
+
